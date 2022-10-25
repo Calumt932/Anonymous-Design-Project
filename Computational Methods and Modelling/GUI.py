@@ -110,7 +110,7 @@ class GUI():
 
 
         Custom_X = tk.Frame()
-        customx_label = tk.Label(master=Custom_X,text="Custom Initial position")
+        customx_label = tk.Label(master=Custom_X,text="Custom Initial Position")
         customx_footnote = tk.Label(master=Custom_X,text="use python syntax, math module allowed")
         customx_entry = tk.Entry(master=Custom_X, width=35,bd=5)
 
@@ -139,7 +139,7 @@ class GUI():
 
 
         Custom_V = tk.Frame()
-        customv_label = tk.Label(master=Custom_V,text="Custom Initial Profile")
+        customv_label = tk.Label(master=Custom_V,text="Custom Initial Velocity")
         customv_footnote = tk.Label(master=Custom_V,text="use python syntax, math module allowed")
         customv_entry = tk.Entry(master=Custom_V, width=35,bd=5)
 
