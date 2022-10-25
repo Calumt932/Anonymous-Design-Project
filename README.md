@@ -1,6 +1,7 @@
 # Anonymous-Design-Project
 ## Download the "Computational Methods And Modelling" Folder, Do Not Modify The Content.
-To start the GUI, run main.py
+To start the GUI, run main.py. 
+Make sure you have the packages needed installed.
 
 ## Graphical User Interface Guide 
 
