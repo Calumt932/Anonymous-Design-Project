@@ -2,4 +2,4 @@
 
 ## Graphical User Interface Guide 
 
-![alt text](https://github.com/B-Harakat/Anonymous-Design-Project/Gui_Snippet.png)
+![alt text](https://github.com/B-Harakat/Anonymous-Design-Project/Gui_Snippet.PNG)
