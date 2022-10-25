@@ -2,7 +2,7 @@
 
 ## Graphical User Interface Guide 
 
-![alt text](https://github.com/B-Harakat/Anonymous-Design-Project/blob/main/Gui_Snippet.PNG?raw=true)
+![alt text](https://github.com/B-Harakat/Anonymous-Design-Project/blob/main/gui.PNG?raw=true)
 
 ### Input of Characteristics of FPUT Problem
 Everything should be self explanatory, do note that *Time* and *dt* has unit seconds.
