@@ -1,4 +1,9 @@
 # Anonymous-Design-Project
+## Taks
+# Antreas - Research the relation between time step and the numerical method used to solve te problem, find out what limitations should be put on the the time step to avoid divergence.
+
+# Nadia - Research different values of alpha and its effect on result, 
+
 ## Download the "Computational Methods And Modelling" Folder, Do Not Modify The Content.
 To start the GUI, run main.py. 
 Make sure you have the packages needed installed.
