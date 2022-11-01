@@ -9,59 +9,72 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pandas as pd
-from scipy.fftpack import fft
+import time
+from scipy.fftpack import fft,rfft,fftfreq
 
+# def implicitit_Euler():
+#     y_i+f(x_i+1,y_i+1)dt-y_i+1 = 0
+
+# Main class that contains all methodologies pertaining to solving FPUT problems numerically 
 class FPUT():
     
-    def __init__(self,X,V,L,N,Time,k,p,alpha, time_step = 0.01):
+    # Configure the variables needed for computing the solution
+    def __init__(self,X=np.zeros(65),V=np.zeros(65),L=1,N=65,Time=120,k=0.1,p=400,alpha=0,time_step = 0.01):
         self.nodes = N
         self.length= L
         
         self.h = L/(N-1)
         self.m = self.h*p
         self.k = k/self.h
-        # predefining k/m instead of recomputing it every iteration saves 0.4s
-        # Note 2: It doesnt matter, same speed
-        # self.f = (self.k/self.m)
 
         self.alpha = alpha
         self.Time = int(Time/time_step)
         self.time_step = time_step
         self.node_positions = np.arange(0,L+L/(N-1),L/(N-1))
-        
+
+        # Generate a list of initial displacement & velocity if the initial profile input,X & V,is a function
+        # Else if the X & V is a list of displacement, no function will be called. 
+
         self.init_x = X(self.node_positions) if callable(X) else X
       
         if len(self.init_x) != self.nodes:
-            print("List of initial positions must equal number of Nodes.")
+            print("\nList of initial positions must equal number of Nodes.")
             return(None)
+    
         
         self.init_v = V(self.node_positions) if callable(V) else V
         if len(self.init_v) != self.nodes:
-            print("List of initial velocities must equal number of Nodes.")
+            print("\nList of initial velocities must equal number of Nodes.")
             return(None)
         
+        # Set the boundaries to 0, as per the boundary conditions
         self.init_x[[0,-1]] = 0
         self.init_v[[0,-1]] = 0
         
         
-
+    # Solve for the accleration at each node as per the FPUT Differential Equation.
     def Acceleration(self, pos):
+        # Generate list of displacement pairs, for easier computing. 
         pos_pairs = [pos[i:i+3] for i in range(len(pos)-2)]
         
+        # Define the FPUT equation
         a = lambda x: (self.k/self.m)*(x[0]+x[2]-2*x[1])*(1+self.alpha*(x[2]-x[0]))
-        acc = [a(x) for x in pos_pairs]
-        acc = np.concatenate([[0],acc,[0]])
+
+        acc = [a(x) for x in pos_pairs] # Generate list of acceleration at each node
+        acc = np.concatenate([[0],acc,[0]]) # Our method truncates the list, so we append 0 to each end to compensate.
         
         return acc
 
-        
+    # Following section describes methods we used to solve the FPUT problem
+    # They all take in a list of displacement and velocity and calculates values for the next time step.
+
     def Euler(self, pos, vel):
         
         acc = self.Acceleration(pos)
-    
+
         pos = pos + self.time_step*vel
         vel = vel + self.time_step*acc
-        
+
         return pos, vel
 
     def Euler_Mod(self, pos, vel):
@@ -73,7 +86,8 @@ class FPUT():
 
         return pos, vel
     
-    
+    def Implicitit_Euler(self,pos,vel):
+        pass
     
     def RK(self, pos, vel):
         
@@ -112,9 +126,16 @@ class FPUT():
         return new_pos, new_vel
     
 
+
+    # Main function that puts everything together
+    # Solves FPUT problem iteratively with the chosen method
+    # Argument, technique, is which method to use
+    # returns a list of node displacements at each time step
+
     def GetData(self,technique = "Euler"):
+
         pos = []
-        
+        self.technique = technique
         if technique == "Euler":
             Method = self.Euler
         elif technique == "RK":
@@ -128,47 +149,24 @@ class FPUT():
         for i in range(self.Time):
             pos.append(x)
             x,v = Method(x,v)
-            
+        
         return pos
 
-    def PlotInstance(self,df,target_time):
-        index = int(target_time/self.time_step)
-        x = self.node_positions
-        y = df[index]
-        plt.plot(x,y)
-        plt.show()
 
-
-
-    def Baseline(self, ratio = 1000):
+    # Returns a list of normalizedfourier coefficient amplitudes at each timestep 
+    # and the corresponding frequencies.
+    def FFT(self, data, nodes, length):
         
-        pos = self.init_x
-        vel = self.init_v
-
-        pos_list = []
-
-        for i in range(self.Time*ratio):
-
-            if i % ratio == 0:
-                pos_list.append(pos)
-
-            acc = self.Acceleration(pos)
+        freq = np.fft.fftfreq(nodes) * nodes * 1/length
+        coef = np.array([2/nodes*np.fft.rfft(i) for i in data])
         
-            pos = pos + (self.time_step/ratio)*vel
-            vel = vel + (self.time_step/ratio)*acc
+        # for index,i in enumerate(coef):
+        #     coef[index] = coef[index]/sum(coef[index][:len(coef[index])//2])
+        # for i in range(6):
+        #     print(coef[i])
+        #     print(coef[i].shape)
 
-
-        return pos_list
-
-
-    def FFT(self, x):
-
-        coef = [fft(i) for i in x]
-
-        norm = lambda n,sum_n: n/sum_n
-
-        coef = [norm(n,np.sum(n)) for n in coef] 
-
+        return coef,freq
 
 
 

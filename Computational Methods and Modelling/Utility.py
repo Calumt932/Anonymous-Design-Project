@@ -54,7 +54,55 @@ def Plot():
 
 # ani = Plot()
 # ani.save("RK_0.5.mp4")
+def PlotInstance(self,df,target_time):
+    index = int(target_time/self.time_step)
+    x = self.node_positions
+    y = df[index]
+    plt.plot(x,y)
+    plt.show()
 
+
+def Baseline(self, ratio = 1000):
+    
+    pos = self.init_x
+    vel = self.init_v
+
+    pos_list = []
+
+    for i in range(self.Time*ratio):
+
+        if i % ratio == 0:
+            pos_list.append(pos)
+
+        acc = self.Acceleration(pos)
+    
+        pos = pos + (self.time_step/ratio)*vel
+        vel = vel + (self.time_step/ratio)*acc
+
+
+    return pos_list
+
+def Animate(self,data,ratio=4):
+        start_time = time.time()
+        def Plot():
+        
+            fig, ax = plt.subplots()
+            
+            x = self.node_positions
+
+            def animate(i):
+                ax.cla()
+                ax.set_xlim(0,self.length)
+                ax.set_ylim(-1.2,1.2)
+                ax.plot(x,data[ratio*i])
+                return ax
+                
+            ani = animation.FuncAnimation(fig, animate, frames=int(self.Time/ratio), interval=int(ratio*self.time_step*1000), repeat=False)
+            return ani
+        ani = Plot()
+        ani.save(f"1.mp4")
+        process_time = time.time() - start_time
+        print(f"Animation function process time: {process_time} s")
 
 def FFT(x):
 
