@@ -158,7 +158,7 @@ class FPUT():
     def FFT(self, data, nodes, length):
         
         freq = np.fft.fftfreq(nodes) * nodes * 1/length
-        coef = np.array([2/nodes*np.fft.rfft(i) for i in data])
+        coef = np.array([2/nodes*np.abs(np.fft.rfft(i)) for i in data])
         
         # for index,i in enumerate(coef):
         #     coef[index] = coef[index]/sum(coef[index][:len(coef[index])//2])
