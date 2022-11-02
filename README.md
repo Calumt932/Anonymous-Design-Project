@@ -1,4 +1,19 @@
 # Anonymous-Design-Project
+
+## Update 02/11
+# Added Modal Analysis Functionality
+
+```python
+  # Returns a list of normalized fourier coefficient amplitudes
+  # and a list of appropriate frequencies, as instrcuted per the numpy documentation.
+  def FFT(self, data, nodes, length):
+      freq = np.fft.fftfreq(nodes) * nodes * 1/length  
+      coef = np.array([2/nodes*np.abs(np.fft.rfft(i)) for i in data])
+      return coef,freq
+```
+Loops through the dataframe containing node displacements and compute the magnitude of fourier coefficient at each time step
+Also produces a list of frequencies for which we can use to plot these coefficients.
+
 ## Taks
 # Antreas - Research the relation between time step and the numerical method used to solve te problem, find out what limitations should be put on the the time step to avoid divergence.
 
